@@ -1,7 +1,7 @@
 def input_error(func):
     """
     Декоратор для обробки помилок введення користувача.
-    
+
     Обробляє винятки:
     - ValueError: Неправильна кількість або формат аргументів
     - KeyError: Контакт не знайдено
@@ -16,7 +16,7 @@ def input_error(func):
             return "Contact not found."
         except IndexError:
             return "Enter the argument for the command"
-    
+
     return inner
 
 
@@ -49,8 +49,6 @@ def change_contact(args, contacts):
 def show_phone(args, contacts):
     """Показує номер телефону для зазначеного контакту."""
     name = args[0]
-    if name not in contacts:
-        raise KeyError
     return contacts[name]
 
 
@@ -59,7 +57,7 @@ def show_all(contacts):
     """Виводить всі збережені контакти."""
     if not contacts:
         return "No contacts saved."
-    
+
     result = []
     for name, phone in contacts.items():
         result.append(f"{name}: {phone}")
@@ -69,7 +67,7 @@ def show_all(contacts):
 def main():
     contacts = {}
     print("Welcome to the assistant bot!")
-    
+
     # Словник команд та відповідних функцій
     commands = {
         "add": add_contact,
@@ -77,25 +75,30 @@ def main():
         "phone": show_phone,
         "all": show_all
     }
-    
+
     while True:
-        user_input = input("Enter a command: ")
+        user_input = input("Enter a command: ").strip()
+
+        # Обробка пустого рядка
+        if not user_input:
+            continue
+
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
             print("Good bye!")
             break
-        
+
         elif command == "hello":
             print("How can I help you?")
-        
+
         elif command in commands:
             # Викликаємо функцію зі словника
             if command == "all":
                 print(commands[command](contacts))
             else:
                 print(commands[command](args, contacts))
-        
+
         else:
             print("Invalid command.")
 
